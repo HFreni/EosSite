@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harrison Freni Test</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <script type="text/javascript"> 
+        function display_ct7() {
+            var x = new Date()
+            var ampm = x.getHours( ) >= 12 ? ' PM' : ' AM';
+            hours = x.getHours( ) % 12;
+            hours = hours ? hours : 12;
+
+            var minutes=x.getMinutes().toString()
+            minutes=minutes.length==1 ? 0+minutes : minutes;
+
+            var seconds=x.getSeconds().toString()
+            seconds=seconds.length==1 ? 0+seconds : seconds;
+
+            var dt=x.getDate().toString();
+            dt=dt.length==1 ? 0+dt : dt;
+            var x1 =   hours + ":" +  minutes + ":" +  seconds + " " + ampm;
+            document.getElementById('ct7').innerHTML = x1;
+            display_c7();
+        }
+
+        function display_c7(){
+            var refresh=1000; // Refresh rate in milli seconds
+            mytime=setTimeout('display_ct7()',refresh)
+        }
+        display_c7()
+    </script>
+    <script type="text/javascript">
+        var timeBegan = null
+        , timeStopped = null
+        , stoppedDuration = 0
+        , started = null;
+
+        function start() {
+            if (timeBegan === null) {
+                timeBegan = new Date();
+            }
+
+            if (timeStopped !== null) {
+                stoppedDuration += (new Date() - timeStopped);
+            }
+            console.log(stoppedDuration);
+
+            started = setInterval(clockRunning, 10);	
+        }
+
+        function stop() {
+            timeStopped = new Date();
+            clearInterval(started);
+        }
+ 
+        function reset() {
+            clearInterval(started);
+            stoppedDuration = 0;
+            timeBegan = null;
+            timeStopped = null;
+            document.getElementById("display-area").innerHTML = "00:00:00:00";
+        }
+        
+        // Timecode Clock
+        function clockRunning(){
+            var currentTime = new Date()
+                , timeElapsed = new Date(currentTime - timeBegan - stoppedDuration)
+                , hour = timeElapsed.getUTCHours()
+                , min = timeElapsed.getUTCMinutes()
+                , sec = timeElapsed.getUTCSeconds()
+                , ms = timeElapsed.getUTCMilliseconds()
+                , frames = ms/33
+                , frm = parseInt(frames, 10); // Convert ms into Timecode
+
+            document.getElementById("display-area").innerHTML = 
+                "1 - " +
+                (hour > 9 ? hour : "0" + hour) + ":" + 
+                (min > 9 ? min : "0" + min) + ":" + 
+                (sec > 9 ? sec : "0" + sec) + ":" + 
+                (frm > 9 ? frm : "0" + frm) + " (No Int)";
+        };
+    </script>
+</head>
+<body onload="display_c7(); start();">
+    <div class="eos-header">
+        <div class="flexL">
+            <a href="index.html"><img class="monitor-icon" src="eos-monitor.svg" alt="Eos Monitor Icon" srcset=""></a>
+            <img class="workspace-icon" src="eos-workspace-1.svg" alt="Eos Monitor Icon" srcset="">
+            <img class="workspace-icon" src="eos-workspace-2.svg" alt="Eos Monitor Icon" srcset="">
+            <img class="workspace-icon" src="eos-workspace-3.svg" alt="Eos Monitor Icon" srcset="">
+            <div class="timecode" id="display-area">1 - 00:00:00:00 (No Int)</div>
+        </div>
+        <div class="flexC">
+            <h1 class="showfile">Harrison Freni - Lighting Programmer</h1>
+        </div>
+        <div class="flexR">
+            <h1 class="eos-time flexR"><span id="ct7"></span></h1>
+        </div>
+    </div>
+    <h1>THIS IS A MAGIC SHEET</h1>
+    <div class="tab-bar" id="footer-bar">
+        <img class="tab-item" src="settings.svg" alt="" srcset="">
+        <h1 class="tab-item active-tab">13.1 "MFA Thesis"</h1>
+        <h1 class="tab-item inactive-tab">2.1 PSD</h1>
+    </div>
+</body>
+</html>
